@@ -1,0 +1,4 @@
+catalog:
+  '@openfga/sdk': 0.9.0
+  '@types/node': 24.5.2
+  '@zod/mini': 4.0.0-beta.0

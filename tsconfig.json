@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noEmit": true,
+    "exactOptionalPropertyTypes": true,
+    "module": "nodenext",
+    "allowImportingTsExtensions": true
+  }
+}
