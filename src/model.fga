@@ -1,12 +1,19 @@
+# This file is not used
 model
     schema 1.2
 
 type user
 
+type tenant
+  relations
+    define member: [user]
+    define admin: member
+
 type site
-    relations
-        define admin: [user]
-        define member: [user]
+  relations
+    define parent: [tenant]
+    define member: [user] or member from parent
+    define admin: [user] or admin from parent
 
 type vehicle
     relations
