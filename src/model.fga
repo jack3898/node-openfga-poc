@@ -1,0 +1,14 @@
+model
+    schema 1.2
+
+type user
+
+type site
+    relations
+        define admin: [user]
+        define member: [user]
+
+type vehicle
+    relations
+        define driver: [user]
+        define owner: [user]

@@ -4,8 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "node --experimental-strip-types --env-file=.env src/index.ts",
-    "create-store": "node --experimental-strip-types src/create-store.ts"
+    "start": "node --experimental-strip-types --env-file=.env src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +15,7 @@
   },
   "dependencies": {
     "@openfga/sdk": "catalog:",
+    "@openfga/syntax-transformer": "catalog:",
     "@zod/mini": "catalog:"
   },
   "devDependencies": {
