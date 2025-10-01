@@ -75,108 +75,130 @@ const fga = {
 const authorizationModel = transformer.transformDSLToJSONObject(modelDsl);
 console.dir(authorizationModel, { depth: null });
 
-await fgaClient.writeAuthorizationModel({
-  schema_version: "1.2",
-  type_definitions: [
-    { type: fga.user.name, relations: {} },
-    {
-      type: fga.tenant.name,
-      relations: {
-        [fga.site.relations.member]: { this: {} },
-        [fga.site.relations.admin]: {
-          computedUserset: { relation: fga.tenant.relations.member },
-        },
-      },
-      metadata: {
-        relations: {
-          [fga.site.relations.member]: {
-            directly_related_user_types: [{ type: fga.user.name }],
-          },
-          [fga.site.relations.admin]: {
-            directly_related_user_types: [],
-          },
-        },
-      },
-    },
-    {
-      type: fga.site.name,
-      relations: {
-        [fga.site.relations.parent]: { this: {} },
-        [fga.site.relations.member]: {
-          union: {
-            child: [
-              { this: {} },
-              {
-                tupleToUserset: {
-                  computedUserset: { relation: fga.site.relations.member },
-                  tupleset: { relation: fga.site.relations.parent },
-                },
-              },
-            ],
-          },
-        },
-        [fga.site.relations.admin]: {
-          union: {
-            child: [
-              { this: {} },
-              {
-                tupleToUserset: {
-                  computedUserset: { relation: fga.site.relations.admin },
-                  tupleset: { relation: fga.site.relations.parent },
-                },
-              },
-            ],
-          },
-        },
-      },
-      metadata: {
-        relations: {
-          [fga.site.relations.parent]: {
-            directly_related_user_types: [{ type: fga.tenant.name }],
-          },
-          [fga.site.relations.member]: {
-            directly_related_user_types: [{ type: fga.user.name }],
-          },
-          [fga.site.relations.admin]: {
-            directly_related_user_types: [{ type: fga.user.name }],
-          },
-        },
-      },
-    },
-    {
-      type: fga.vehicle.name,
-      relations: {
-        [fga.vehicle.relations.driver]: { this: {} },
-        [fga.vehicle.relations.owner]: { this: {} },
-      },
-      metadata: {
-        relations: {
-          [fga.vehicle.relations.driver]: {
-            directly_related_user_types: [{ type: fga.user.name }],
-          },
-          [fga.vehicle.relations.owner]: {
-            directly_related_user_types: [{ type: fga.user.name }],
-          },
-        },
-      },
-    },
-  ],
-});
+await fgaClient.writeAuthorizationModel(authorizationModel);
+
+// await fgaClient.writeAuthorizationModel({
+//   schema_version: "1.2",
+//   type_definitions: [
+//     { type: fga.user.name, relations: {} },
+//     {
+//       type: fga.tenant.name,
+//       relations: {
+//         [fga.site.relations.member]: { this: {} },
+//         [fga.site.relations.admin]: {
+//           computedUserset: { relation: fga.tenant.relations.member },
+//         },
+//       },
+//       metadata: {
+//         relations: {
+//           [fga.site.relations.member]: {
+//             directly_related_user_types: [{ type: fga.user.name }],
+//           },
+//           [fga.site.relations.admin]: {
+//             directly_related_user_types: [],
+//           },
+//         },
+//       },
+//     },
+//     {
+//       type: fga.site.name,
+//       relations: {
+//         [fga.site.relations.parent]: { this: {} },
+//         [fga.site.relations.member]: {
+//           union: {
+//             child: [
+//               { this: {} },
+//               {
+//                 tupleToUserset: {
+//                   computedUserset: { relation: fga.site.relations.member },
+//                   tupleset: { relation: fga.site.relations.parent },
+//                 },
+//               },
+//             ],
+//           },
+//         },
+//         [fga.site.relations.admin]: {
+//           union: {
+//             child: [
+//               { this: {} },
+//               {
+//                 tupleToUserset: {
+//                   computedUserset: { relation: fga.site.relations.admin },
+//                   tupleset: { relation: fga.site.relations.parent },
+//                 },
+//               },
+//             ],
+//           },
+//         },
+//       },
+//       metadata: {
+//         relations: {
+//           [fga.site.relations.parent]: {
+//             directly_related_user_types: [{ type: fga.tenant.name }],
+//           },
+//           [fga.site.relations.member]: {
+//             directly_related_user_types: [{ type: fga.user.name }],
+//           },
+//           [fga.site.relations.admin]: {
+//             directly_related_user_types: [{ type: fga.user.name }],
+//           },
+//         },
+//       },
+//     },
+//     {
+//       type: fga.vehicle.name,
+//       relations: {
+//         [fga.vehicle.relations.driver]: { this: {} },
+//         [fga.vehicle.relations.owner]: { this: {} },
+//       },
+//       metadata: {
+//         relations: {
+//           [fga.vehicle.relations.driver]: {
+//             directly_related_user_types: [{ type: fga.user.name }],
+//           },
+//           [fga.vehicle.relations.owner]: {
+//             directly_related_user_types: [{ type: fga.user.name }],
+//           },
+//         },
+//       },
+//     },
+//   ],
+// });
 
 await fgaClient.write({
   writes: [
     {
-      user: fga.user.identify("USER-01"),
-      relation: fga.site.relations.admin,
       object: fga.tenant.identify("TENANT-01"),
+      user: fga.user.identify("USER-01"),
+      relation: fga.tenant.relations.member,
+    },
+    {
+      object: fga.site.identify("SITE-02"),
+      user: fga.user.identify("USER-02"),
+      relation: fga.tenant.relations.member,
+    },
+    {
+      object: fga.site.identify("SITE-01"),
+      user: fga.tenant.identify("TENANT-01"),
+      relation: fga.site.relations.parent,
+    },
+    {
+      object: fga.site.identify("SITE-02"),
+      user: fga.tenant.identify("TENANT-01"),
+      relation: fga.site.relations.parent,
+    },
+    {
+      object: fga.site.identify("SITE-03"),
+      user: fga.tenant.identify("TENANT-01"),
+      relation: fga.site.relations.parent,
     },
   ],
 });
 
 const res = await fgaClient.check({
-  user: fga.user.identify("USER-01"),
-  relation: fga.site.relations.admin,
-  object: fga.site.identify("SITE-01"),
+  object: fga.site.identify("SITE-02"),
+  user: fga.user.identify("USER-02"),
+  relation: fga.site.relations.member,
 });
 
 console.log(res);
