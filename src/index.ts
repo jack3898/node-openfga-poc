@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { transformer } from "@openfga/syntax-transformer";
 
 import { OpenFgaClient } from "@openfga/sdk";
+import fs from "fs";
 
 let storeId = "";
 
@@ -76,6 +77,8 @@ const authorizationModel = transformer.transformDSLToJSONObject(modelDsl);
 console.dir(authorizationModel, { depth: null });
 
 await fgaClient.writeAuthorizationModel(authorizationModel);
+
+fs.writeFileSync("model.json", JSON.stringify(authorizationModel, null, 2));
 
 // await fgaClient.writeAuthorizationModel({
 //   schema_version: "1.2",

@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "node --experimental-strip-types --env-file=.env src/index.ts"
+    "start": "node --experimental-strip-types --env-file=.env src/index.ts",
+    "ts": "node --experimental-strip-types src/generate-typings.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,8 @@
     "@zod/mini": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "catalog:"
+    "@types/node": "catalog:",
+    "ts-morph": "^27.0.0",
+    "typescript": "^5.9.3"
   }
 }
